@@ -23,7 +23,7 @@ export default function Home() {
     <main className='bg-[#0B0F19] text-gray-200 min-h-screen px-6'>
       <div className='max-w-5xl mx-auto'>
         {/* Navbar */}
-        <nav className='flex justify-between items-center py-6 sticky top-0 backdrop-blur-md bg-white/5'>
+        <nav className='flex justify-between items-center p-6 sticky top-0 backdrop-blur-md bg-white/5'>
           <h1 className='text-xl font-bold'>James.dev</h1>
           <div className='space-x-6 text-sm'>
             <a href='#projects'>Projects</a>
