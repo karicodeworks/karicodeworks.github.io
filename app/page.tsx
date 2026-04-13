@@ -1,5 +1,89 @@
-// app/page.tsx
-import Link from 'next/link'
+'use client'
+import React, { useEffect, useState } from 'react'
+import { Menu, X } from 'lucide-react'
+
+const sections = [
+  { id: 'home', label: 'Home' },
+  { id: 'about', label: 'About' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'contact', label: 'Contact' },
+]
+
+function ResponsiveNav() {
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState('')
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id)
+          }
+        })
+      },
+      { threshold: 0.6 },
+    )
+
+    sections.forEach((section) => {
+      const el = document.getElementById(section.id)
+      if (el) observer.observe(el)
+    })
+
+    return () => observer.disconnect()
+  }, [])
+
+  const linkClass = (id: string) =>
+    `transition-all duration-300 hover:text-indigo-400 ${
+      active === id ? 'text-indigo-400' : 'text-gray-300'
+    }`
+
+  return (
+    <nav className='p-6 sticky top-0 backdrop-blur-md bg-white/5 z-50'>
+      <div className='flex justify-between items-center'>
+        <h1 className='text-xl font-bold'>James.dev</h1>
+
+        {/* Desktop */}
+        <div className='hidden md:flex space-x-6 text-sm'>
+          {sections.map((s) => (
+            <a key={s.id} href={`#${s.id}`} className={linkClass(s.id)}>
+              {s.label}
+            </a>
+          ))}
+        </div>
+
+        {/* Mobile toggle */}
+        <button
+          className='md:hidden text-gray-300'
+          onClick={() => setOpen(!open)}
+        >
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ${
+          open ? 'max-h-40 mt-4' : 'max-h-0'
+        }`}
+      >
+        <div className='flex flex-col space-y-4 text-sm'>
+          {sections.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className={linkClass(s.id)}
+              onClick={() => setOpen(false)}
+            >
+              {s.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  )
+}
 
 const projects = [
   {
@@ -29,17 +113,7 @@ export default function Home() {
     <main className='bg-[#0B0F19] text-gray-200 min-h-screen px-6'>
       <div className='max-w-5xl mx-auto'>
         {/* Navbar */}
-        <nav className='flex justify-between items-center p-6 sticky top-0 backdrop-blur-md bg-white/5'>
-          <h1 className='text-xl font-bold'>James.dev</h1>
-          <div className='space-x-6 text-sm'>
-            <a href='#home'>Home</a>
-            <a href='#about'>About</a>
-            <a href='#projects'>Projects</a>
-            <a href='#skills'>Skills</a>
-            {/* <a href='#case-study'>Case Study</a> */}
-            <a href='#contact'>Contact</a>
-          </div>
-        </nav>
+        <ResponsiveNav />
 
         {/* Hero */}
         <section id='home' className='py-24'>
@@ -113,8 +187,20 @@ export default function Home() {
                 </div>
 
                 <div className='mt-6 flex gap-4 text-sm'>
-                  <Link href={project.live}>Live</Link>
-                  <Link href={project.github}>GitHub</Link>
+                  <a
+                    href={project.live}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    Live
+                  </a>
+                  <a
+                    href={project.github}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    GitHub
+                  </a>
                 </div>
               </div>
             ))}
